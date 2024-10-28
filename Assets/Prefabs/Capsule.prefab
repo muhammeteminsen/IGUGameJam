@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3971516576538575945}
   - component: {fileID: 4343262483114993036}
   - component: {fileID: 6508839620716795433}
+  - component: {fileID: 4443253594256706061}
   - component: {fileID: 6550852218836346486}
   m_Layer: 0
   m_Name: Capsule
@@ -138,6 +139,20 @@ MonoBehaviour:
   sprintAcceleration: 2
   sprintDeceleration: 1.3
   sprintFOV: 100
+--- !u!114 &4443253594256706061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2186378912176018464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13c575a96a055e4b888d8054344e428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockBackForce: 30
+  hitTime: 0.2
 --- !u!54 &6550852218836346486
 Rigidbody:
   m_ObjectHideFlags: 0
