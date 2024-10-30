@@ -8,19 +8,37 @@ public class GunSystem : MonoBehaviour
 {
     // [SerializeField] private float knockBackForce = 500f;
     [Range(0f, 5f)] [SerializeField] private float hitTime = 1f;
+    [Header("Reload Variables")]
     [SerializeField] private int bullet = 30;
     [SerializeField] private int magazine = 100;
     [SerializeField] private TextMeshProUGUI bulletText;
     [SerializeField] private TextMeshProUGUI magazineText;
 
+    [Header("Gun Recoil Variables")] 
+    [SerializeField] private float recoilStrength = 0.5f;
+    [SerializeField] private float recoilSmoothness = 0.5f;
+    [SerializeField] private float recoilReturnSpeed = 4f;
+    [SerializeField] private Transform weapon;
+    [Header("Bullet Recoil Variables")]
+    [SerializeField] private float recoilMinX = -1;
+    [SerializeField] private float recoilMaxX = 1;
+    [SerializeField] private float recoilMinY = -1;
+    [SerializeField] private float recoilMaxY = 1;  
+    [Header("Particle Effects")]
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem bloodEffect;
+    [SerializeField] private ParticleSystem metalEffect;
+
+    private Vector3 _recoilRot;
+    private Vector3 _initialPosition;
     private float _hitCounter;
     private int _defaultBullet;
-
-
     private Camera _camera;
+
 
     private void Awake()
     {
+        _initialPosition = weapon.localPosition;
         _camera = Camera.main;
     }
 
@@ -33,6 +51,12 @@ public class GunSystem : MonoBehaviour
     {
         ShootingRaycast();
         ReloadSystem();
+        _recoilRot = _camera.transform.localRotation.eulerAngles;
+        if (_recoilRot.x != 0 || _recoilRot.y != 0)
+        {
+            _camera.transform.localRotation = Quaternion.Slerp(_camera.transform.localRotation,
+                Quaternion.Euler(0, 0, 0), Time.deltaTime);
+        }
     }
 
     private void ShootingRaycast()
@@ -41,22 +65,42 @@ public class GunSystem : MonoBehaviour
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet>0)
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet > 0)
             {
-                bullet--;
-                _hitCounter = Time.time + hitTime;
-                Debug.Log("Shooting");
-                // KnockBack(hit);
+                Shooting();
+                if (hit.transform.CompareTag("Enemy"))
+                {
+                    ParticleSystem bloodEffectInstance = Instantiate(bloodEffect,hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(bloodEffectInstance, .2f);
+                }
+                else
+                {
+                    ParticleSystem metalEffectInstance = Instantiate(metalEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(metalEffectInstance, .2f);
+                }
             }
-
             Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.red);
         }
+        
         else
         {
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet > 0)
+            {
+               Shooting();
+            }
+
             Debug.DrawRay(ray.origin, ray.direction * 1000, Color.green);
         }
     }
 
+    private void Shooting()
+    {
+        muzzleFlash.Play();
+        bullet--;
+        _hitCounter = Time.time + hitTime;
+        Debug.Log("Shooting");
+        Recoil();
+    }
     private void ReloadSystem()
     {
         if (Input.GetKeyDown(KeyCode.R) && magazine > 0)
@@ -88,6 +132,25 @@ public class GunSystem : MonoBehaviour
         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
         magazineText.text = magazine.ToString(CultureInfo.InvariantCulture);
     }
+
+    private void Recoil()
+    {
+        //Geri Tepme
+        Vector3 recoilPosition = new Vector3(weapon.transform.localPosition.x, weapon.transform.localPosition.y,
+            -weapon.transform.localPosition.z * recoilStrength);
+        weapon.transform.localPosition = Vector3.Lerp(weapon.transform.localPosition, _initialPosition + recoilPosition,
+            Time.deltaTime * recoilSmoothness);
+        weapon.transform.localPosition = Vector3.Lerp(weapon.transform.localPosition, _initialPosition,
+            Time.deltaTime * recoilReturnSpeed);
+
+        //Sekme
+        float randomX = Random.Range(recoilMinX, recoilMaxX);
+        float randomY = Random.Range(recoilMinY, recoilMaxY);
+        _camera.transform.localRotation =
+            Quaternion.Euler(_recoilRot.x - randomY, _recoilRot.y + randomX, _recoilRot.z);
+    }
+
+
 
     // private void KnockBack(RaycastHit hit)
     // {

@@ -6774,6 +6774,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 500972272}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!198 &1330363856 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7215156243891741541, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
+  m_PrefabInstance: {fileID: 6882838838894924953}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1332877846
 GameObject:
   m_ObjectHideFlags: 0
@@ -10457,6 +10462,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 500972272}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &1976130948
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1976130950}
+  - component: {fileID: 1976130949}
+  m_Layer: 0
+  m_Name: PostProccesing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1976130949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976130948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 109835e680764ca4399d9c1c9e0697be, type: 2}
+--- !u!4 &1976130950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976130948}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -24.128155, y: 1.9785213, z: -170.128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1992593335
 GameObject:
   m_ObjectHideFlags: 0
@@ -11051,25 +11105,33 @@ PrefabInstance:
       value: Capsule
       objectReference: {fileID: 0}
     - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
+      propertyPath: bullet
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
       propertyPath: magazine
-      value: 60
+      value: 900
       objectReference: {fileID: 0}
     - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
       propertyPath: bulletText
       value: 
       objectReference: {fileID: 1433240925}
     - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
+      propertyPath: bloodEffect
+      value: 
+      objectReference: {fileID: 198000013597187216, guid: 83e55d3418297934fab882559d009285, type: 3}
+    - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
+      propertyPath: metalEffect
+      value: 
+      objectReference: {fileID: 198000013440722320, guid: 02a509a7fa70ed740ba4197e20c5d32d, type: 3}
+    - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
+      propertyPath: muzzleFlash
+      value: 
+      objectReference: {fileID: 1330363856}
+    - target: {fileID: 4443253594256706061, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
       propertyPath: magazineText
       value: 
       objectReference: {fileID: 4567377}
-    - target: {fileID: 6508839620716795433, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
-      propertyPath: jumpForce
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6508839620716795433, guid: 0dbad5df5ac8a324d94d2109e1a6700d, type: 3}
-      propertyPath: groundMask.m_Bits
-      value: 67108864
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11087,3 +11149,4 @@ SceneRoots:
   - {fileID: 1264914590}
   - {fileID: 1008485499}
   - {fileID: 1356445907}
+  - {fileID: 1976130950}

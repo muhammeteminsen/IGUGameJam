@@ -27,12 +27,15 @@ public class Movement : MonoBehaviour
     private float _defaultVelocityMaxValue;
     private float _defaultFOV;
     private Camera _camera;
+    private Transform _cameraHolder;
     private bool _isGrounded;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _camera = Camera.main;
+        if (_camera != null) 
+            _cameraHolder = _camera.transform.parent;
     }
 
     void Start()
@@ -108,7 +111,7 @@ public class Movement : MonoBehaviour
         _xRotation -= mouseY;
         _xRotation = Mathf.Clamp(_xRotation, -verticalLookMaxValue, verticalLookMaxValue);
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + mouseX, 0);
-        _camera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+        _cameraHolder.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
     }
 
     private void OnCollisionStay(Collision other)
