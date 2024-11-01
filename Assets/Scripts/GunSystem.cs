@@ -23,12 +23,22 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private float recoilMinX = -1;
     [SerializeField] private float recoilMaxX = 1;
     [SerializeField] private float recoilMinY = -1;
-    [SerializeField] private float recoilMaxY = 1;  
+    [SerializeField] private float recoilMaxY = 1;
     [Header("Particle Effects")]
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private ParticleSystem bloodEffect;
     [SerializeField] private ParticleSystem metalEffect;
+    [Header("PopUp Variables")]
+    [SerializeField] private TextMeshPro damagePopUpText;
+    [SerializeField] private float popUpOffsetY=0.7f;
+    [SerializeField] private float popUpOffsetZ=0.7f;
+    [SerializeField] private float popUpRandomizeY=0.5f;
+    [SerializeField] private float popUpRandomizeZ=0.3f;
 
+
+    
+    
+    private Vector3 _damagePopUpOffset;
     private Vector3 _recoilRot;
     private Vector3 _initialPosition;
     private float _hitCounter;
@@ -63,20 +73,27 @@ public class GunSystem : MonoBehaviour
     {
         RaycastHit hit;
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        if (Physics.Raycast(ray, out hit, 1000f))
         {
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet > 0)
             {
+                IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 Shooting();
-                if (hit.transform.CompareTag("Enemy"))
+                if (damageable != null)
                 {
-                    ParticleSystem bloodEffectInstance = Instantiate(bloodEffect,hit.point, Quaternion.LookRotation(hit.normal));
-                    Destroy(bloodEffectInstance, .2f);
+                    float damage = damageable.DamageAmount;
+                    damageable.TakeDamage(damage);
+                    ParticleSystem bloodEffectInstance = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    bloodEffectInstance.transform.parent = hit.transform;
+                    float popupRandomZ = Random.Range(-popUpRandomizeZ,popUpRandomizeZ);
+                    float popupRandomY = Random.Range(-popUpRandomizeY,popUpRandomizeY);
+                    _damagePopUpOffset = new Vector3(0, popupRandomY+popUpOffsetY, popupRandomZ-popUpOffsetZ);
+                    damagePopUpText.text = damage.ToString(CultureInfo.InvariantCulture);
+                    Instantiate(damagePopUpText, hit.point + _damagePopUpOffset , Quaternion.LookRotation(-hit.normal));
                 }
                 else
                 {
-                    ParticleSystem metalEffectInstance = Instantiate(metalEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                    Destroy(metalEffectInstance, .2f);
+                    Instantiate(metalEffect, hit.point, Quaternion.LookRotation(hit.normal));
                 }
             }
             Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.red);
@@ -149,11 +166,5 @@ public class GunSystem : MonoBehaviour
         _camera.transform.localRotation =
             Quaternion.Euler(_recoilRot.x - randomY, _recoilRot.y + randomX, _recoilRot.z);
     }
-
-
-
-    // private void KnockBack(RaycastHit hit)
-    // {
-    //     hit.transform.GetComponent<Rigidbody>().AddForce(_camera.transform.forward * knockBackForce);
-    // }
+  
 }

@@ -21,18 +21,19 @@ public class Movement : MonoBehaviour
     [SerializeField] private float sprintDeceleration = 2.5f;
     [SerializeField] private float sprintFOV=100f;
 
-    private Rigidbody _rb;
+
     private float _xRotation;
     private float _defaultSpeed;
     private float _defaultVelocityMaxValue;
     private float _defaultFOV;
+    private Vector3 _velocity;
     private Camera _camera;
     private Transform _cameraHolder;
-    private bool _isGrounded;
+    private CharacterController _characterController;
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        _characterController = GetComponent<CharacterController>();
         _camera = Camera.main;
         if (_camera != null) 
             _cameraHolder = _camera.transform.parent;
@@ -41,7 +42,6 @@ public class Movement : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Physics.gravity = new Vector3(0, -9.81f, 0);
         _defaultSpeed = movementSpeed;
         _defaultVelocityMaxValue = velocityMaxValue;
         if (_camera != null)
@@ -58,28 +58,40 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-        float moveVertical = Input.GetAxisRaw("Vertical") * Time.deltaTime;
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        _rb.linearVelocity += transform.TransformDirection(movement * (movementSpeed * movementAcceleration));
+        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
 
-        if (moveHorizontal == 0 && moveVertical == 0)
-            _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, movementDeceleration * Time.deltaTime);
-        float clampedVelocity = Mathf.Clamp(_rb.linearVelocity.magnitude, 0, velocityMaxValue);
-        _rb.linearVelocity = _rb.linearVelocity.normalized * clampedVelocity;
+        Vector3 moveDirection = transform.right * moveHorizontal + transform.forward * moveVertical;
+        moveDirection = moveDirection.normalized * movementSpeed;
+
+        if (_characterController.isGrounded)
+        {
+            _velocity.x = Mathf.Lerp(_velocity.x, moveDirection.x, movementAcceleration * Time.deltaTime);
+            _velocity.z = Mathf.Lerp(_velocity.z, moveDirection.z, movementAcceleration * Time.deltaTime);
+            if (moveHorizontal == 0 && moveVertical == 0)
+            {
+                _velocity.x = Mathf.Lerp(_velocity.x, 0, movementDeceleration * Time.deltaTime);
+                _velocity.z = Mathf.Lerp(_velocity.z, 0, movementDeceleration * Time.deltaTime);
+            }
+        }
+        else
+        {
+            _velocity.x = moveDirection.x;
+            _velocity.z = moveDirection.z;
+        }
+
+        _characterController.Move(_velocity * Time.deltaTime);
     }
 
     private void Jump()
     {
-        
-        if (Input.GetKey(KeyCode.Space) && _isGrounded)
+        if (_characterController.isGrounded && Input.GetKey(KeyCode.Space))
         {
-            _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, jumpHeight, _rb.linearVelocity.z);
+            _velocity.y = jumpHeight;
         }
-
-        if (!_isGrounded)
+        else if (!_characterController.isGrounded)
         {
-            _rb.linearVelocity += Vector3.up * (Physics.gravity.y * fallMultiplier * Time.deltaTime);
+            _velocity.y += Physics.gravity.y * fallMultiplier * Time.deltaTime;
         }
     }
 
@@ -112,21 +124,5 @@ public class Movement : MonoBehaviour
         _xRotation = Mathf.Clamp(_xRotation, -verticalLookMaxValue, verticalLookMaxValue);
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + mouseX, 0);
         _cameraHolder.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-    }
-
-    private void OnCollisionStay(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            _isGrounded = true;
-        }
-    }
-
-    private void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            _isGrounded = false;
-        }
     }
 }
