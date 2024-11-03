@@ -23,7 +23,7 @@ public class SkillUIManager : MonoBehaviour
         skillButton3.interactable = false;
 
         // Butonlara týklanabilirlik ekleyin
-        skillButton1.onClick.AddListener(SpeedBoost);
+        skillButton1.onClick.AddListener(ActivateSpeedBoost);
         skillButton2.onClick.AddListener(SlowEnemies);
         skillButton3.onClick.AddListener(FreezeEnemies);
     }
@@ -39,9 +39,8 @@ public class SkillUIManager : MonoBehaviour
         skillIcon1.enabled = manaSystem.currentMana >= 10;
         skillIcon2.enabled = manaSystem.currentMana >= 20;
         skillIcon3.enabled = manaSystem.currentMana >= 30;
-
-        { 
-    
+        Skills();
+    }
 
     public void ActivateSpeedBoost()
     {
@@ -70,26 +69,22 @@ public class SkillUIManager : MonoBehaviour
             manaSystem.currentMana -= 30;
             Debug.Log("Düþmanlar donduruldu!");
             // Düþmanlarý dondurma iþlevini buraya ekleyin
-
-
-
-
         }
-        public void Update()
-
-        {
-            if (Input.GetButtonDown("Fire1"))  // 1 tuþuna atanan giriþ
-            {
-                ActivateSpeedBoost();
-            }
-            if (Input.GetButtonDown("Fire2"))  // 2 tuþuna atanan giriþ
-            {
-                SlowEnemies();
-            }
-            if (Input.GetButtonDown("Fire3"))  // 3 tuþuna atanan giriþ
-            {
-                FreezeEnemies();
-            }
-        }
-
     }
+
+    public void Skills()
+    {
+        if (Input.GetButtonDown("Fire1"))  // 1 tuþuna atanan giriþ
+        {
+            ActivateSpeedBoost();
+        }
+        if (Input.GetButtonDown("Fire2"))  // 2 tuþuna atanan giriþ
+        {
+            SlowEnemies();
+        }
+        if (Input.GetButtonDown("Fire3"))  // 3 tuþuna atanan giriþ
+        {
+            FreezeEnemies();
+        }
+    }
+}
