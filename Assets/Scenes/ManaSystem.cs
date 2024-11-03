@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
     public class ManaSystem : MonoBehaviour
 {
-    public Slider manaBar;
+    public Slider Slider ;
     public float maxMana = 100f;
-    private float currentMana;
+    public float currentMana;
     public float manaRegenRate = 1f;
     public float killManaBonus = 5f;
 
@@ -18,14 +18,14 @@ using UnityEngine.UI;
     public SlowEnemies slowEnemies; // SlowEnemies scripti
     public FreezeEnemies freezeEnemies; // FreezeEnemies scripti
 
-    private void Start()
+    public void Start()
     {
         currentMana = 0;
-        manaBar.maxValue = maxMana;
-        manaBar.value = currentMana;
+        Slider.maxValue = maxMana;
+        Slider.value = currentMana;
     }
 
-    private void Update()
+    public void Update()
     {
         // Zamanla mana yenilenmesi
         RegenerateMana(Time.deltaTime * manaRegenRate);
@@ -48,7 +48,7 @@ using UnityEngine.UI;
     public void RegenerateMana(float amount)
     {
         currentMana = Mathf.Clamp(currentMana + amount, 0, maxMana);
-        manaBar.value = currentMana;
+        Slider.value = currentMana;
     }
 
     public void OnEnemyKilled()
@@ -86,7 +86,7 @@ using UnityEngine.UI;
         if (currentMana >= amount)
         {
             currentMana -= amount;
-            manaBar.value = currentMana;
+            Slider.value = currentMana;
             return true;
         }
         return false;
