@@ -20,7 +20,7 @@ using UnityEngine.UI;
 
     public void Start()
     {
-        currentMana = 0;
+        currentMana = 20;
         Slider.maxValue = maxMana;
         Slider.value = currentMana;
     }
@@ -42,6 +42,10 @@ using UnityEngine.UI;
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             ActivateFreezeEnemies();
+        }
+        else if(Input.GetKeyDown(KeyCode.U))
+        {
+            RegenerateMana(50);
         }
     }
 

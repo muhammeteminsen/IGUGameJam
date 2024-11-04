@@ -74,15 +74,15 @@ public class SkillUIManager : MonoBehaviour
 
     public void Skills()
     {
-        if (Input.GetButtonDown("Fire1"))  // 1 tuþuna atanan giriþ
+        if (Input.GetKeyDown(KeyCode.Z))  // 1 tuþuna atanan giriþ
         {
             ActivateSpeedBoost();
         }
-        if (Input.GetButtonDown("Fire2"))  // 2 tuþuna atanan giriþ
+        if (Input.GetKeyDown(KeyCode.X))  // 2 tuþuna atanan giriþ
         {
             SlowEnemies();
         }
-        if (Input.GetButtonDown("Fire3"))  // 3 tuþuna atanan giriþ
+        if (Input.GetKeyDown(KeyCode.C))  // 3 tuþuna atanan giriþ
         {
             FreezeEnemies();
         }

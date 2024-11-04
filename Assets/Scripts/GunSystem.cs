@@ -35,6 +35,8 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private float popUpRandomizeY=0.5f;
     [SerializeField] private float popUpRandomizeZ=0.3f;
 
+     [Header("Animator Variables")]
+ [SerializeField] private Animator GunAnimator;
 
     
     
@@ -55,6 +57,7 @@ public class GunSystem : MonoBehaviour
     private void Start()
     {
         _defaultBullet = bullet;
+       // Animator GunAnimator = GetComponent<Animator>();
     }
 
     void Update()
@@ -112,6 +115,7 @@ public class GunSystem : MonoBehaviour
 
     private void Shooting()
     {
+        GunAnimator.SetTrigger("Shot");
         muzzleFlash.Play();
         bullet--;
         _hitCounter = Time.time + hitTime;
@@ -123,6 +127,7 @@ public class GunSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && magazine > 0)
         {
             int spentBullet = Mathf.Abs(bullet - _defaultBullet);
+            GunAnimator.SetTrigger("Reload");
             if (bullet == 0)
             {
                 magazine -= _defaultBullet;
