@@ -1,6 +1,7 @@
 using System.Globalization;
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -11,8 +12,9 @@ public class GunSystem : MonoBehaviour
     [Header("Reload Variables")]
     [SerializeField] private int bullet = 30;
     [SerializeField] private int magazine = 100;
-    [SerializeField] private TextMeshProUGUI bulletText;
-    [SerializeField] private TextMeshProUGUI magazineText;
+    [SerializeField] private TextMeshPro bulletText;
+    [SerializeField] private TextMeshPro magazineText;
+    [SerializeField] private float reloadDelay = 1.0f; // Bekleme süresi
 
     [Header("Gun Recoil Variables")] 
     [SerializeField] private float recoilStrength = 0.5f;
@@ -36,7 +38,7 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private float popUpRandomizeZ=0.3f;
 
      [Header("Animator Variables")]
- [SerializeField] private Animator GunAnimator;
+ [SerializeField] public Animator GunAnimator;
 
     
     
@@ -57,6 +59,9 @@ public class GunSystem : MonoBehaviour
     private void Start()
     {
         _defaultBullet = bullet;
+       // UpdateAmmoAfterDelay(0);
+         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
+        magazineText.text = magazine.ToString(CultureInfo.InvariantCulture);
        // Animator GunAnimator = GetComponent<Animator>();
     }
 
@@ -76,7 +81,7 @@ public class GunSystem : MonoBehaviour
     {
         RaycastHit hit;
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 1000f))
+        if (Physics.Raycast(ray, out hit, 500f))
         {
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet > 0)
             {
@@ -115,40 +120,47 @@ public class GunSystem : MonoBehaviour
 
     private void Shooting()
     {
-        GunAnimator.SetTrigger("Shot");
+        //GunAnimator.SetTrigger("Shot");
         muzzleFlash.Play();
         bullet--;
         _hitCounter = Time.time + hitTime;
         Debug.Log("Shooting");
         Recoil();
+         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
+        
     }
     private void ReloadSystem()
     {
         if (Input.GetKeyDown(KeyCode.R) && magazine > 0)
         {
-            int spentBullet = Mathf.Abs(bullet - _defaultBullet);
             GunAnimator.SetTrigger("Reload");
-            if (bullet == 0)
-            {
-                magazine -= _defaultBullet;
-                bullet = _defaultBullet;
-                if (magazine < spentBullet)
-                {
-                    bullet += magazine;
-                    magazine = 0;
-                }
-            }
+            StartCoroutine(UpdateAmmoAfterDelay(reloadDelay)); // Inspector'den ayarlanabilir bekleme süresi
+        }
+    }
 
-            else if (magazine < spentBullet)
+    private IEnumerator UpdateAmmoAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        int spentBullet = Mathf.Abs(bullet - _defaultBullet);
+        if (bullet == 0)
+        {
+            magazine -= _defaultBullet;
+            bullet = _defaultBullet;
+            if (magazine < spentBullet)
             {
                 bullet += magazine;
                 magazine = 0;
             }
-            else if (bullet < _defaultBullet)
-            {
-                magazine -= spentBullet;
-                bullet = _defaultBullet;
-            }
+        }
+        else if (magazine < spentBullet)
+        {
+            bullet += magazine;
+            magazine = 0;
+        }
+        else if (bullet < _defaultBullet)
+        {
+            magazine -= spentBullet;
+            bullet = _defaultBullet;
         }
 
         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
