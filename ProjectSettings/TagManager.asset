@@ -4,12 +4,14 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - MainLight
-  - CinemachineTarget
-  - ScreenCamera
-  - cockpit_capitalLaser
   - Ground
   - Enemy
+  - Head
+  - Body
+  - Arm
+  - Leg
+  - AnomalyFast
+  - AnomalySlow
   layers:
   - Default
   - TransparentFX

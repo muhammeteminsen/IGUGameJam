@@ -1,7 +1,6 @@
 using System.Globalization;
 using TMPro;
 using UnityEngine;
-using System.Collections;
 
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -14,7 +13,6 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private int magazine = 100;
     [SerializeField] private TextMeshPro bulletText;
     [SerializeField] private TextMeshPro magazineText;
-    [SerializeField] private float reloadDelay = 1.0f; // Bekleme süresi
 
     [Header("Gun Recoil Variables")] 
     [SerializeField] private float recoilStrength = 0.5f;
@@ -37,8 +35,6 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private float popUpRandomizeY=0.5f;
     [SerializeField] private float popUpRandomizeZ=0.3f;
 
-     [Header("Animator Variables")]
- [SerializeField] public Animator GunAnimator;
 
     
     
@@ -59,13 +55,9 @@ public class GunSystem : MonoBehaviour
     private void Start()
     {
         _defaultBullet = bullet;
-       // UpdateAmmoAfterDelay(0);
-         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
-        magazineText.text = magazine.ToString(CultureInfo.InvariantCulture);
-       // Animator GunAnimator = GetComponent<Animator>();
     }
 
-    void Update()
+    void LateUpdate()
     {
         ShootingRaycast();
         ReloadSystem();
@@ -81,23 +73,26 @@ public class GunSystem : MonoBehaviour
     {
         RaycastHit hit;
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 500f))
+        int layerIndex = LayerMask.NameToLayer("AnomalyFast");
+        int layerMask = ~(1 << layerIndex);
+        if (Physics.Raycast(ray, out hit, 1000f,layerMask))
         {
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter && bullet > 0)
             {
-                IDamageable damageable = hit.transform.GetComponent<IDamageable>();
+                IDamageable damageable = hit.transform.GetComponentInParent<IDamageable>();
                 Shooting();
                 if (damageable != null)
                 {
                     float damage = damageable.DamageAmount;
-                    damageable.TakeDamage(damage);
+                    damageable.TakeDamage(damage,hit);
+                    damagePopUpText.text = damage.ToString(CultureInfo.InvariantCulture);
+                    Instantiate(damagePopUpText, hit.point + _damagePopUpOffset , Quaternion.LookRotation(-hit.normal));
                     ParticleSystem bloodEffectInstance = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
                     bloodEffectInstance.transform.parent = hit.transform;
                     float popupRandomZ = Random.Range(-popUpRandomizeZ,popUpRandomizeZ);
                     float popupRandomY = Random.Range(-popUpRandomizeY,popUpRandomizeY);
                     _damagePopUpOffset = new Vector3(0, popupRandomY+popUpOffsetY, popupRandomZ-popUpOffsetZ);
-                    damagePopUpText.text = damage.ToString(CultureInfo.InvariantCulture);
-                    Instantiate(damagePopUpText, hit.point + _damagePopUpOffset , Quaternion.LookRotation(-hit.normal));
+                    
                 }
                 else
                 {
@@ -120,47 +115,38 @@ public class GunSystem : MonoBehaviour
 
     private void Shooting()
     {
-        //GunAnimator.SetTrigger("Shot");
         muzzleFlash.Play();
         bullet--;
         _hitCounter = Time.time + hitTime;
         Debug.Log("Shooting");
         Recoil();
-         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
-        
     }
     private void ReloadSystem()
     {
         if (Input.GetKeyDown(KeyCode.R) && magazine > 0)
         {
-            GunAnimator.SetTrigger("Reload");
-            StartCoroutine(UpdateAmmoAfterDelay(reloadDelay)); // Inspector'den ayarlanabilir bekleme süresi
-        }
-    }
+            int spentBullet = Mathf.Abs(bullet - _defaultBullet);
+            if (bullet == 0)
+            {
+                magazine -= _defaultBullet;
+                bullet = _defaultBullet;
+                if (magazine < spentBullet)
+                {
+                    bullet += magazine;
+                    magazine = 0;
+                }
+            }
 
-    private IEnumerator UpdateAmmoAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        int spentBullet = Mathf.Abs(bullet - _defaultBullet);
-        if (bullet == 0)
-        {
-            magazine -= _defaultBullet;
-            bullet = _defaultBullet;
-            if (magazine < spentBullet)
+            else if (magazine < spentBullet)
             {
                 bullet += magazine;
                 magazine = 0;
             }
-        }
-        else if (magazine < spentBullet)
-        {
-            bullet += magazine;
-            magazine = 0;
-        }
-        else if (bullet < _defaultBullet)
-        {
-            magazine -= spentBullet;
-            bullet = _defaultBullet;
+            else if (bullet < _defaultBullet)
+            {
+                magazine -= spentBullet;
+                bullet = _defaultBullet;
+            }
         }
 
         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);

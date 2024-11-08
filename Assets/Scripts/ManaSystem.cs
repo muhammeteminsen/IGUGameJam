@@ -1,99 +1,89 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-    public class ManaSystem : MonoBehaviour
+public class ManaSystem : MonoBehaviour
 {
-    public Slider Slider ;
-    public float maxMana = 100f;
-    public float currentMana;
-    public float manaRegenRate = 1f;
-    public float killManaBonus = 5f;
+    [Header("Mana Variables")] [SerializeField]
+    private Image manaBarImage;
 
-    // Güçlerin mana maliyeti
-    public float speedBoostManaCost = 20f;
-    public float slowEnemiesManaCost = 30f;
-    public float freezeEnemiesManaCost = 50f;
+    [SerializeField] private float manaBarAcceleration = 1.5f;
+    [SerializeField] private float manaBarDeclaration = 1.5f;
+    [SerializeField] private float onDestroyMana = 20f;
 
-    public SpeedBoost speedBoost;  // SpeedBoost scripti
-    public SlowEnemies slowEnemies; // SlowEnemies scripti
-    public FreezeEnemies freezeEnemies; // FreezeEnemies scripti
+    [Header("FreezeSkill Variables")] [SerializeField]
+    private float freezeSkillBarAcceleration = 1.5f;
 
-    public void Start()
+    [SerializeField] private float freezeSkillBarDeclaration = 1.5f;
+    [SerializeField] private Image freezeSkillImage;
+    public bool isFreeze;
+
+    [Header("Player Speed Skill Variables")] [SerializeField]
+    private float speedSkillBarAcceleration = 1.5f;
+
+    [SerializeField] private float speedSkillBarDeclaration = 1.5f;
+    [SerializeField] private Image speedSkillImage;
+    public bool isSpeedSkill;
+
+    [Header("Enemy Slow Skill Variables")] [SerializeField]
+    private float slowSkillBarAcceleration = 1.5f;
+
+    [SerializeField] private float slowSkillBarDeclaration = 1.5f;
+    [SerializeField] private Image slowSkillImage;
+    public bool isSlowSkill;
+
+    void Start()
     {
-        currentMana = 20;
-        Slider.maxValue = maxMana;
-        Slider.value = currentMana;
+        manaBarImage.fillAmount = 0f;
     }
 
-    public void Update()
-    {
-        // Zamanla mana yenilenmesi
-        RegenerateMana(Time.deltaTime * manaRegenRate);
 
-        // Güçleri tuþlara atama
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+    void Update()
+    {
+        if (!isFreeze || !isSpeedSkill || !isSlowSkill)
         {
-            ActivateSpeedBoost();
+            manaBarImage.fillAmount += manaBarAcceleration * Time.deltaTime;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ActivateSlowEnemies();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ActivateFreezeEnemies();
-        }
-        else if(Input.GetKeyDown(KeyCode.U))
-        {
-            RegenerateMana(50);
-        }
+
+        ManageSkill(KeyCode.E, ref isFreeze, freezeSkillImage, freezeSkillBarAcceleration, freezeSkillBarDeclaration);
+        ManageSkill(KeyCode.Q, ref isSpeedSkill, speedSkillImage, speedSkillBarAcceleration, speedSkillBarDeclaration);
+        ManageSkill(KeyCode.T, ref isSlowSkill, slowSkillImage, slowSkillBarAcceleration, slowSkillBarDeclaration);
     }
 
-    public void RegenerateMana(float amount)
+    public void SetMana()
     {
-        currentMana = Mathf.Clamp(currentMana + amount, 0, maxMana);
-        Slider.value = currentMana;
+        manaBarImage.fillAmount += onDestroyMana / 100f;
     }
 
-    public void OnEnemyKilled()
+    private void ManageSkill(KeyCode key, ref bool skillActive, Image skillImage, float skillAcceleration,
+        float skillDeclaration)
     {
-        RegenerateMana(killManaBonus);
-    }
-
-    // Güçleri etkinleþtiren ve mana kontrol eden fonksiyonlar
-    private void ActivateSpeedBoost()
-    {
-        if (UseMana(speedBoostManaCost))
+        if (Input.GetKeyDown(key) && manaBarImage.fillAmount > 0)
         {
-            speedBoost.ActivateSpeedBoost();
+            skillActive = !skillActive;
+            if (skillActive)
+            {
+                manaBarImage.fillAmount -= manaBarDeclaration / 100f;
+            }
         }
-    }
 
-    private void ActivateSlowEnemies()
-    {
-        if (UseMana(slowEnemiesManaCost))
+        if (skillActive)
         {
-            slowEnemies.ActivateSlowEnemies();
+            if (manaBarImage.fillAmount > 0)
+            {
+                skillImage.fillAmount -= skillDeclaration * Time.deltaTime;
+                if (skillImage.fillAmount <= 0)
+                {
+                    skillActive = false;
+                }
+            }
+            else
+            {
+                skillActive = false;
+            }
         }
-    }
-
-    private void ActivateFreezeEnemies()
-    {
-        if (UseMana(freezeEnemiesManaCost))
+        else
         {
-            freezeEnemies.ActivateFreezeEnemies();
+            skillImage.fillAmount += skillAcceleration * Time.deltaTime;
         }
-    }
-
-    public bool UseMana(float amount)
-    {
-        if (currentMana >= amount)
-        {
-            currentMana -= amount;
-            Slider.value = currentMana;
-            return true;
-        }
-        return false;
     }
 }
-
