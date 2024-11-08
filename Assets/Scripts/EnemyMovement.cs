@@ -40,17 +40,5 @@ public class EnemyMovement : MonoBehaviour
     {
         speed = originalSpeed;
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        // Eðer düþman oyuncuya çarptýysa
-        if (other.CompareTag("Player"))
-        {
-            // Oyuncuya hasar ver
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageAmount); // 5 hasar ver
-            }
-        }
-    }
+
 }
