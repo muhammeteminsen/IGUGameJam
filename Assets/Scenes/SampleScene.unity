@@ -2305,6 +2305,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Time AnomalyFast
       objectReference: {fileID: 0}
+    - target: {fileID: 8173391301125811206, guid: e45380e66dc4eab40abab9bf490be519, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3984,6 +3988,10 @@ PrefabInstance:
       propertyPath: manaSystem
       value: 
       objectReference: {fileID: 1763431910}
+    - target: {fileID: 4902173192206727503, guid: a011420d72e34ca45ba84a6855f0d6d5, type: 3}
+      propertyPath: targetLayerMask.m_Bits
+      value: 16384
+      objectReference: {fileID: 0}
     - target: {fileID: 7316319090669847127, guid: a011420d72e34ca45ba84a6855f0d6d5, type: 3}
       propertyPath: mainVolume
       value: 

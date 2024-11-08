@@ -34,7 +34,8 @@ public class GunSystem : MonoBehaviour
     [SerializeField] private float popUpOffsetZ=0.7f;
     [SerializeField] private float popUpRandomizeY=0.5f;
     [SerializeField] private float popUpRandomizeZ=0.3f;
-
+    [Header("Layer Mask Settings")]
+    [SerializeField] private LayerMask targetLayerMask;
 
     
     
@@ -73,7 +74,7 @@ public class GunSystem : MonoBehaviour
     {
         RaycastHit hit;
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        int layerIndex = LayerMask.NameToLayer("AnomalyFast");
+        int layerIndex = LayerMask.NameToLayer("AnomalyFast") | LayerMask.NameToLayer("AnomalySlow");
         int layerMask = ~(1 << layerIndex);
         if (Physics.Raycast(ray, out hit, 1000f,layerMask))
         {
