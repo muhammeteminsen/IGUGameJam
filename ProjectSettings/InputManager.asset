@@ -9,8 +9,8 @@ InputManager:
     m_Name: Horizontal
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: left
-    positiveButton: right
+    negativeButton: a
+    positiveButton: d
     altNegativeButton: a
     altPositiveButton: d
     gravity: 3
@@ -25,8 +25,8 @@ InputManager:
     m_Name: Vertical
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: down
-    positiveButton: up
+    negativeButton: s
+    positiveButton: w
     altNegativeButton: s
     altPositiveButton: w
     gravity: 3
@@ -38,7 +38,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Fire1
+    m_Name: SpeedBoost
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -54,7 +54,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Fire2
+    m_Name: SlowEnemies
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -70,7 +70,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Fire3
+    m_Name: FreezeEnemies
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 

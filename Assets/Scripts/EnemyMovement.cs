@@ -2,43 +2,58 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Transform player;       // Hedef olarak alýnacak oyuncu
-    public float speed = 3.0f;     // Düþmanýn hareket hýzý
-    public float stoppingDistance = 1.5f; // Oyuncuya yaklaþma mesafesi
+    public float speed = 5f;        // Düþman hýzýný buradan kontrol edebilirsiniz
+    public float normalSpeed = 5f;  // Normal hýz, donma veya yavaþlatma durumunda kullanýlýr
+    private Transform player;       // Oyuncu hedefi
+    private Vector3 direction;      // Düþman hareket yönü
+    private float distanceToPlayer; // Oyuncuya olan mesafe
 
-    private float originalSpeed;   // Hýzý dondurma ve eski haline döndürme için saklar
-
-    private void Start()
+    void Start()
     {
-        originalSpeed = speed; // Orijinal hýzý kaydeder
-        // Eðer sahnede bir oyuncu yoksa onu bulur
-        if (player == null && GameObject.FindGameObjectWithTag("Player") != null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-        }
+        player = GameObject.FindWithTag("Player").transform;  // Oyuncuyu bul
+        normalSpeed = speed;  // Baþlangýçta normalSpeed, speed ile eþit olacak
     }
 
-    private void Update()
+    void Update()
     {
-        // Eðer bir oyuncu varsa ve mesafe çarpýþma mesafesinden büyükse
-        if (player != null && Vector3.Distance(transform.position, player.position) > stoppingDistance)
+        MoveTowardsPlayer();
+    }
+
+    // Oyuncuya doðru hareket etme
+    void MoveTowardsPlayer()
+    {
+        distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        if (distanceToPlayer > 1f)  // Mesafe 1 birimden büyükse, oyuncuya doðru hareket et
         {
-            // Oyuncuya doðru hareket et
-            Vector3 direction = (player.position - transform.position).normalized;
+            direction = (player.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
         }
     }
 
-    // Hýzý sýfýrlamak için kullanýlýr
+    // Düþman hýzýný yavaþlat
+    public void ApplySlowEffect(float slowAmount, float duration)
+    {
+        speed *= slowAmount; // Hýzý yavaþlat
+        Invoke(nameof(RestoreSpeed), duration);  // Hýzý eski haline getir
+    }
+
+    // Hýzý eski haline döndür
+    private void RestoreSpeed()
+    {
+        speed = normalSpeed;  // Hýzý normalSpeed'e geri döndür
+    }
+
+    // Düþmaný dondur
     public void Freeze()
     {
-        speed = 0;
+        speed = 0;  // Hýzý sýfýrla
     }
 
-    // Eski hýza döndürmek için kullanýlýr
-    public void ResetSpeed()
+    // Dondurmayý kaldýr
+    public void Unfreeze()
     {
-        speed = originalSpeed;
-    }
+        speed = normalSpeed;
 
+    }
 }

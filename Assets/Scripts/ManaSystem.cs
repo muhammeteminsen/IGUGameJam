@@ -1,89 +1,33 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ManaSystem : MonoBehaviour
 {
-    [Header("Mana Variables")] [SerializeField]
-    private Image manaBarImage;
-
-    [SerializeField] private float manaBarAcceleration = 1.5f;
-    [SerializeField] private float manaBarDeclaration = 1.5f;
-    [SerializeField] private float onDestroyMana = 20f;
-
-    [Header("FreezeSkill Variables")] [SerializeField]
-    private float freezeSkillBarAcceleration = 1.5f;
-
-    [SerializeField] private float freezeSkillBarDeclaration = 1.5f;
-    [SerializeField] private Image freezeSkillImage;
-    public bool isFreeze;
-
-    [Header("Player Speed Skill Variables")] [SerializeField]
-    private float speedSkillBarAcceleration = 1.5f;
-
-    [SerializeField] private float speedSkillBarDeclaration = 1.5f;
-    [SerializeField] private Image speedSkillImage;
-    public bool isSpeedSkill;
-
-    [Header("Enemy Slow Skill Variables")] [SerializeField]
-    private float slowSkillBarAcceleration = 1.5f;
-
-    [SerializeField] private float slowSkillBarDeclaration = 1.5f;
-    [SerializeField] private Image slowSkillImage;
-    public bool isSlowSkill;
-
-    void Start()
-    {
-        manaBarImage.fillAmount = 0f;
-    }
-
+    public float maxMana = 100f;       // Maksimum mana
+    public float currentMana = 100f;   // Baþlangýçta mana 100
+    public float manaRegenerationRate = 5f;  // Mana yenileme oraný (her saniye)
 
     void Update()
     {
-        if (!isFreeze || !isSpeedSkill || !isSlowSkill)
-        {
-            manaBarImage.fillAmount += manaBarAcceleration * Time.deltaTime;
-        }
-
-        ManageSkill(KeyCode.E, ref isFreeze, freezeSkillImage, freezeSkillBarAcceleration, freezeSkillBarDeclaration);
-        ManageSkill(KeyCode.Q, ref isSpeedSkill, speedSkillImage, speedSkillBarAcceleration, speedSkillBarDeclaration);
-        ManageSkill(KeyCode.T, ref isSlowSkill, slowSkillImage, slowSkillBarAcceleration, slowSkillBarDeclaration);
+        RegenerateMana();
     }
 
-    public void SetMana()
+    // Mana yenileme fonksiyonu
+    private void RegenerateMana()
     {
-        manaBarImage.fillAmount += onDestroyMana / 100f;
+        if (currentMana < maxMana)
+        {
+            currentMana = Mathf.Min(currentMana + manaRegenerationRate * Time.deltaTime, maxMana);
+        }
     }
 
-    private void ManageSkill(KeyCode key, ref bool skillActive, Image skillImage, float skillAcceleration,
-        float skillDeclaration)
+    // Mana harcama fonksiyonu
+    public bool UseMana(float amount)
     {
-        if (Input.GetKeyDown(key) && manaBarImage.fillAmount > 0)
+        if (currentMana >= amount)
         {
-            skillActive = !skillActive;
-            if (skillActive)
-            {
-                manaBarImage.fillAmount -= manaBarDeclaration / 100f;
-            }
+            currentMana -= amount;  // Mana harcanýr
+            return true;  // Yeterli mana varsa true döner
         }
-
-        if (skillActive)
-        {
-            if (manaBarImage.fillAmount > 0)
-            {
-                skillImage.fillAmount -= skillDeclaration * Time.deltaTime;
-                if (skillImage.fillAmount <= 0)
-                {
-                    skillActive = false;
-                }
-            }
-            else
-            {
-                skillActive = false;
-            }
-        }
-        else
-        {
-            skillImage.fillAmount += skillAcceleration * Time.deltaTime;
-        }
+        return false;  // Yeterli mana yoksa false döner
     }
 }

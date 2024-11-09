@@ -2,32 +2,24 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxHealth = 100f;  // Oyuncunun maksimum saðlýðý
-    private float currentHealth;    // Oyuncunun mevcut saðlýðý
+    public float health = 100f;  // Oyuncunun baþlangýç saðlýðý
 
-    void Start()
+    // Oyuncu hasar aldýðýnda çaðrýlan fonksiyon
+    public void TakeDamage(float damage)
     {
-        currentHealth = maxHealth; // Baþlangýçta maksimum saðlýk ile baþla
-    }
+        health -= damage;  // Saðlýk deðerini azaltýyoruz
 
-    // Hasar alýndýðýnda çaðrýlacak fonksiyon
-    public void TakeDamage(float amount)
-    {
-        currentHealth -= amount;  // Saðlýðý azalt
-        Debug.Log("Oyuncu hasar aldý! Kalan saðlýk: " + currentHealth);
-
-        // Eðer saðlýk 0 veya daha düþükse, oyuncuyu öldür
-        if (currentHealth <= 0)
+        // Saðlýk sýfýrýn altýna düþerse (ölürse)
+        if (health <= 0f)
         {
-            Die();
+            Die();  // Oyuncu ölürse ölme fonksiyonunu çaðýrýyoruz
         }
     }
 
+    // Oyuncu öldüðünde yapýlacak iþlemler
     void Die()
     {
-        // Oyuncu öldü, burada ölüm animasyonu veya ekran mesajý ekleyebilirsiniz
-        Debug.Log("Oyuncu öldü!");
-        // Öldüðünde oyuncu yok olmalý (örneðin, destroy et)
-        Destroy(gameObject);
+        Debug.Log("Player is dead!");
+        // Buraya oyuncunun öldüðü zaman yapýlacak iþlemleri ekleyebilirsiniz (örneðin animasyon, oyun bitiþi vb.)
     }
 }
