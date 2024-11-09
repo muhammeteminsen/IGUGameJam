@@ -30,7 +30,7 @@ public class SlowEnemies : MonoBehaviour
     void Update()
     {
         // Eðer "3" tuþuna basýldýysa ve yeterli mana varsa, Slow Enemies'i aktive et
-        if (Input.GetKeyDown(KeyCode.Alpha3) && manaSystem.UseMana(slowCost))
+        if (Input.GetKeyDown(KeyCode.Alpha2) && manaSystem.UseMana(slowCost))
         {
             ActivateSlowEnemies();
         }

@@ -1,46 +1,55 @@
 using UnityEngine;
 
-public class FreezeEnemies : MonoBehaviour
+public class EnemyFreeze : MonoBehaviour
 {
-    public ManaSystem manaSystem;     // Mana sistemi
-    public float freezeCost = 30f;    // Dondurma maliyeti
-    public float freezeDuration = 5f; // Dondurma süresi
-    public bool isFreeze = false;     // Dondurma durumu
+    private Vector3 lastPosition;  // Düþmanýn önceki pozisyonu
+    private Vector3 targetPosition;  // Hedef pozisyon (dondurulmuþken deðiþmez)
+    private float freezeDuration = 3f;  // Dondurma süresi
+    private float freezeTimer = 0f;  // Zamanlayýcý
+    private bool isFrozen = false;  // Dondurma durumu
 
-    private EnemyMovement enemyMovement; // Düþman hareketi
-
-    void Start()
+    private void Start()
     {
-        // EnemyMovement component'ini alýyoruz (Düþman hareketini kontrol etmek için)
-        enemyMovement = GetComponent<EnemyMovement>();
+        // Düþmanýn baþlangýç pozisyonunu kaydet
+        lastPosition = transform.position;
+        targetPosition = lastPosition;
     }
 
-    void Update()
+    // Düþmaný dondur
+    public void FreezeEnemy()
     {
-        // Tuþa basýldýðýnda ve yeterli mana varsa dondurmayý aktive et
-        if (Input.GetKeyDown(KeyCode.Alpha2) && manaSystem.UseMana(freezeCost))
+        // Dondurma sýrasýnda düþmanýn pozisyonunu sabitle
+        isFrozen = true;
+        freezeTimer = freezeDuration;  // Dondurmanýn süresini baþlat
+        targetPosition = transform.position;  // Dondurulan pozisyonu kaydet
+    }
+
+    // Zaman ilerledikçe, dondurmanýn süresi biterse çözülmesini saðla
+    private void Update()
+    {
+        // Dondurma süresi devam ediyorsa, hareketi durdur
+        if (isFrozen)
         {
-            ActivateFreeze();
-        }
-    }
+            freezeTimer -= Time.deltaTime;  // Zamanlayýcýyý azalt
 
-    void ActivateFreeze()
-    {
-        if (!isFreeze)
+            // Dondurma süresi bittiðinde, hareketi serbest býrak
+            if (freezeTimer <= 0)
+            {
+                isFrozen = false;
+            }
+        }
+
+        // Eðer dondurulmamýþsa, düþmaný hareket ettir
+        if (!isFrozen)
         {
-            isFreeze = true;  // Dondurma etkinleþtirildi
-            enemyMovement.enabled = false;  // Düþman hareketi durduruluyor (freeze iþlemi)
-            Debug.Log("Düþmanlar donduruldu!");
-
-            // Dondurmanýn süresi bitince iþlemi sonlandýr
-            Invoke("DeactivateFreeze", freezeDuration);
+            // Normal hareket fonksiyonunu buraya ekleyebilirsiniz
+            // Örneðin:
+            // transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
         }
-    }
-
-    void DeactivateFreeze()
-    {
-        isFreeze = false;  // Dondurma etkisi sona erdi
-        enemyMovement.enabled = true;   // Düþman hareketi tekrar aktif
-        Debug.Log("Dondurma etkisi sona erdi!");
+        else
+        {
+            // Dondurulduðunda düþmanýn pozisyonu sabit kalýr
+            transform.position = targetPosition;
+        }
     }
 }

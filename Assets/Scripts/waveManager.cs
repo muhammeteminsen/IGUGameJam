@@ -1,65 +1,93 @@
 using UnityEngine;
-using UnityEngine.UI;  // UI için gerekli
+using UnityEngine.UI;
+using TMPro;  // TextMeshPro'yu kullanabilmek için bu namespace'i ekle
 
 public class WaveManager : MonoBehaviour
 {
-    public Text waveText;  // UI Text bileþeni
-    public GameObject enemyPrefab;  // Düþman prefab'ý
-    public Transform[] spawnPoints;  // Düþmanlarýn spawn olacaðý noktalar
-    public float timeBetweenWaves = 5f;  // Dalga geçiþleri arasýndaki süre
-    public int enemiesPerWave = 5;  // Her dalgada spawn olacak düþman sayýsý
+    public TextMeshProUGUI waveText;  // TextMeshPro bileþeni
+    public GameObject normalEnemyPrefab;  // Normal enemy prefab
+    public GameObject mediumEnemyPrefab;  // Medium enemy prefab
+    public GameObject bossEnemyPrefab;    // Boss enemy prefab
+    public Transform spawnPoint;
+    public int currentWave = 0;    // Þu anki dalga
+    public int enemiesRemaining = 10;  // Baþlangýçta 10 düþman
+    public float timeBetweenWaves = 5f; // Dalga arasýnda geçen süre
+    private bool waveInProgress = false;
 
-    private int currentWave = 1;  // Baþlangýç dalgasý
-    private bool isWaveInProgress = false;
+    // Belirlediðiniz spawn pozisyonlarý
 
+    public Vector3[] spawnPositions;
     void Start()
     {
-        // Ýlk dalgayý baþlat
-        StartWave();
+        // Düþmaný spawn noktasýndaki pozisyonda yarat
+        Instantiate(normalEnemyPrefab, spawnPoint.position, Quaternion.identity);
+
+        // Baþlangýçta Wave 1 ve düþman sayýsýný gösteriyoruz
+        UpdateWaveText("Wave 1: " + enemiesRemaining + " Enemies Left!");
+        StartNewWave();
     }
 
     void Update()
     {
-        if (!isWaveInProgress)
+        // Eðer dalga bitmiþse ve yeni dalga baþlamak üzereyse
+        if (!waveInProgress && currentWave < 10)
         {
-            // Eðer mevcut dalga bitmiþse, bir sonraki dalgayý baþlat
-            waveText.text = "Dalga " + currentWave;
-            Invoke("StartWave", timeBetweenWaves);  // Dalga baþlama gecikmesi
+            Invoke("StartNewWave", timeBetweenWaves);
+            waveInProgress = true;
         }
     }
 
-    // Dalga baþlatma fonksiyonu
-    void StartWave()
+    void StartNewWave()
     {
-        isWaveInProgress = true;
-        waveText.text = "Dalga " + currentWave + " Baþlýyor!";
+        // Dalga bitiyor, yeni dalga baþlatýlýyor
+        currentWave++;
+        enemiesRemaining = currentWave * 10;  // Her dalgada düþman sayýsý 10 artar
+
+        waveInProgress = false;
+
+        // Yeni dalga metnini göster
+        UpdateWaveText("Wave " + (currentWave + 1) + ": " + enemiesRemaining + " Enemies Left!");
 
         // Düþmanlarý spawn et
         SpawnEnemies();
 
-        // Dalga sonrasýnda UI'yý güncelle
-        Invoke("WaveComplete", timeBetweenWaves);  // Dalga bitiþi gecikmesi
-    }
-
-    // Düþmanlarý spawn etme fonksiyonu
-    void SpawnEnemies()
-    {
-        for (int i = 0; i < enemiesPerWave * currentWave; i++)
+        // Eðer boss dalgasý ise, bossu spawn et
+        if (currentWave == 10)
         {
-            int spawnPointIndex = Random.Range(0, spawnPoints.Length);
-            Instantiate(enemyPrefab, spawnPoints[spawnPointIndex].position, Quaternion.identity);
+            SpawnBoss();
         }
     }
 
-    // Dalga tamamlandýðýnda çaðrýlýr
-    void WaveComplete()
+    // Düþmanlarý spawn etmek için metod
+    void SpawnEnemies()
     {
-        isWaveInProgress = false;
+        // Düþman türüne göre prefab seçimi
+        GameObject enemyPrefab = normalEnemyPrefab;
 
-        // Dalga sayýsýný arttýr
-        currentWave++;
+        if (currentWave > 5 && currentWave < 10)
+        {
+            enemyPrefab = mediumEnemyPrefab; // Medium enemy prefab'ýný seç
+        }
 
-        // UI'yi dalga tamamlandýktan sonra güncelle
-        waveText.text = "Dalga " + currentWave;
+        // Düþmanlarý spawn et
+        for (int i = 0; i < enemiesRemaining; i++)
+        {
+            Vector3 spawnPos = spawnPositions[Random.Range(0, spawnPositions.Length)]; // Rastgele bir spawn pozisyonu seç
+            Instantiate(enemyPrefab, spawnPos, Quaternion.identity); // Düþmanlarý belirli bir pozisyonda yerleþtir
+        }
+    }
+
+    // Boss düþmaný spawn etme
+    void SpawnBoss()
+    {
+        Vector3 spawnPos = spawnPositions[Random.Range(0, spawnPositions.Length)]; // Boss için rastgele spawn pozisyonu
+        Instantiate(bossEnemyPrefab, spawnPos, Quaternion.identity); // Bossu spawn et
+        Debug.Log("Boss Enemy Spawned!");
+    }
+
+    // Wave Text'in güncellenmesi için yardýmcý metod
+    void UpdateWaveText(string text)
+    {
+        waveText.text = text;
     }
 }
