@@ -1,55 +1,46 @@
 using UnityEngine;
+using System.Collections;
 
-public class EnemyFreeze : MonoBehaviour
+public class FreezeEnemies : MonoBehaviour
 {
-    private Vector3 lastPosition;  // Düþmanýn önceki pozisyonu
-    private Vector3 targetPosition;  // Hedef pozisyon (dondurulmuþken deðiþmez)
-    private float freezeDuration = 3f;  // Dondurma süresi
-    private float freezeTimer = 0f;  // Zamanlayýcý
-    private bool isFrozen = false;  // Dondurma durumu
+    public EnemyMovement[] enemies;  // Düþmanlarý tutacak dizi
+    public float freezeDuration = 5f;  // Dondurma süresi (5 saniye)
+    private bool isFrozenActive = false;  // Freeze skill'in aktif olup olmadýðýný takip eder
 
-    private void Start()
+    void Update()
     {
-        // Düþmanýn baþlangýç pozisyonunu kaydet
-        lastPosition = transform.position;
-        targetPosition = lastPosition;
+        // 3 tuþuna basýldýðýnda, dondurma iþlemi baþlat
+        if (Input.GetKeyDown(KeyCode.Alpha3) && !isFrozenActive)
+        {
+            // Freeze iþlemini baþlat
+            StartCoroutine(FreezeEnemiesMovement());
+        }
     }
 
-    // Düþmaný dondur
-    public void FreezeEnemy()
+    // Düþmanlarý 5 saniyeliðine dondur
+    private IEnumerator FreezeEnemiesMovement()
     {
-        // Dondurma sýrasýnda düþmanýn pozisyonunu sabitle
-        isFrozen = true;
-        freezeTimer = freezeDuration;  // Dondurmanýn süresini baþlat
-        targetPosition = transform.position;  // Dondurulan pozisyonu kaydet
-    }
-
-    // Zaman ilerledikçe, dondurmanýn süresi biterse çözülmesini saðla
-    private void Update()
-    {
-        // Dondurma süresi devam ediyorsa, hareketi durdur
-        if (isFrozen)
+        // Düþmanlarý dondur
+        foreach (EnemyMovement enemy in enemies)
         {
-            freezeTimer -= Time.deltaTime;  // Zamanlayýcýyý azalt
-
-            // Dondurma süresi bittiðinde, hareketi serbest býrak
-            if (freezeTimer <= 0)
-            {
-                isFrozen = false;
-            }
+            enemy.Freeze();
         }
 
-        // Eðer dondurulmamýþsa, düþmaný hareket ettir
-        if (!isFrozen)
+        // Freeze aktif hale getir
+        isFrozenActive = true;
+        Debug.Log("Enemies' movement is frozen for " + freezeDuration + " seconds!");
+
+        // 5 saniye bekle
+        yield return new WaitForSeconds(freezeDuration);
+
+        // Düþmanlarýn dondurmasýný kaldýr
+        foreach (EnemyMovement enemy in enemies)
         {
-            // Normal hareket fonksiyonunu buraya ekleyebilirsiniz
-            // Örneðin:
-            // transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+            enemy.Unfreeze();
         }
-        else
-        {
-            // Dondurulduðunda düþmanýn pozisyonu sabit kalýr
-            transform.position = targetPosition;
-        }
+
+        // Freeze deaktif hale getir
+        isFrozenActive = false;
+        Debug.Log("Enemies' movement is unfrozen after " + freezeDuration + " seconds!");
     }
 }
