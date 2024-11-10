@@ -11,6 +11,8 @@ public class GunSystem : MonoBehaviour
 
     [Header("Gun Recoil Variables")] [SerializeField]
     private float recoilStrength = 0.5f;
+      [Header("Gun Sounds")]
+      [SerializeField] private Sounds gunsounds;
 
     [SerializeField] private float recoilSmoothness = 0.5f;
     [SerializeField] private float recoilReturnSpeed = 4f;
@@ -122,6 +124,7 @@ public class GunSystem : MonoBehaviour
         _reloadSystem.bullet--;
         _hitCounter = Time.time + hitTime;
         Debug.Log("Shooting");
+        gunsounds.PlaySound("Fire");
         Recoil();
     }
 

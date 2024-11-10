@@ -161,9 +161,14 @@ public class Enemies : MonoBehaviour
 
     public void Die()
     {
+        foreach (var material in _renderer.materials)
+            {
+                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dýþý býrak
+            }
         _manaSystem.SetMana();
         _playerHealth.OnDestroyVariables();
         Destroy(gameObject);
+        
     }
 
     private void OnDrawGizmos()

@@ -6,6 +6,7 @@ using UnityEngine;
 public class ReloadSystem : MonoBehaviour
 {
     public bool isReloading;
+    [SerializeField] private Sounds _sounds;
     
     [Header("Reload Variables")]
     [SerializeField] public int bullet = 30;
@@ -27,6 +28,7 @@ public class ReloadSystem : MonoBehaviour
         {
             isReloading = true;
             _animator.SetTrigger("Reload");
+            _sounds.PlaySound("Reload");
         }
         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
         magazineText.text = magazine.ToString(CultureInfo.InvariantCulture);
@@ -36,9 +38,11 @@ public class ReloadSystem : MonoBehaviour
     {
         if (magazine > 0)
         {
+             
             int spentBullet = Mathf.Abs(bullet - _defaultBullet);
             if (bullet == 0)
             {
+               
                 magazine -= _defaultBullet;
                 bullet = _defaultBullet;
                 if (magazine < spentBullet)
