@@ -44,9 +44,9 @@ public class ManaSystem : MonoBehaviour
             manaBarImage.fillAmount += manaBarAcceleration * Time.deltaTime;
         }
 
-        ManageSkill(KeyCode.E, ref isFreeze, freezeSkillImage, freezeSkillBarAcceleration, freezeSkillBarDeclaration);
-        ManageSkill(KeyCode.Q, ref isSpeedSkill, speedSkillImage, speedSkillBarAcceleration, speedSkillBarDeclaration);
-        ManageSkill(KeyCode.T, ref isSlowSkill, slowSkillImage, slowSkillBarAcceleration, slowSkillBarDeclaration);
+        ManageSkill(KeyCode.Alpha1, ref isFreeze, freezeSkillImage, freezeSkillBarAcceleration, freezeSkillBarDeclaration);
+        ManageSkill(KeyCode.Alpha2, ref isSpeedSkill, speedSkillImage, speedSkillBarAcceleration, speedSkillBarDeclaration);
+        ManageSkill(KeyCode.Alpha3, ref isSlowSkill, slowSkillImage, slowSkillBarAcceleration, slowSkillBarDeclaration);
     }
 
     public void SetMana()

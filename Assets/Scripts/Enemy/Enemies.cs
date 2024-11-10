@@ -8,27 +8,22 @@ public class Enemies : MonoBehaviour
     public float health;
     public float damage;
 
-     
+
     [SerializeField] private float slowSkillSpeed = 0.5f;
+
     [Header("Health Bar Variables")] [SerializeField]
     private Image healthBar;
+
     [SerializeField] private Image backgroundHealthBar;
     [SerializeField] private Transform healthBarCanvas;
     [SerializeField] private float healthBarSmooth;
-
-    [Header("Body Part Variables")] [SerializeField]
-    private float headDamage;
-
-    [SerializeField] private float bodyDamage;
-    [SerializeField] private float armDamage;
-    [SerializeField] private float legDamage;
-
+    
     [Header("AI Variables")] [SerializeField]
     private float stoppingDistance;
-    [SerializeField] private float hitDamage;
 
+    [SerializeField] private float hitDamage;
+    [SerializeField] private float suspicionDamage;
     private float _defaultHealth;
-    private float _defaultDamage;
     private float _defaultSpeed;
     private Camera _camera;
     private NavMeshAgent _navMeshAgent;
@@ -37,7 +32,7 @@ public class Enemies : MonoBehaviour
     private bool _isDead;
     private Animator _animator;
     private PlayerHealth _playerHealth;
-    
+    private bool _isSuspicion;
 
     private void Awake()
     {
@@ -52,7 +47,6 @@ public class Enemies : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _defaultHealth = health;
-        _defaultDamage = damage;
         _defaultSpeed = _navMeshAgent.speed;
         _navMeshAgent.stoppingDistance = stoppingDistance;
     }
@@ -66,30 +60,11 @@ public class Enemies : MonoBehaviour
             AIController();
             SlowDownSkill();
         }
-       
     }
 
-    public void TakeDamage(float damage, RaycastHit hit)
-    {
-        switch (hit.transform.gameObject.tag)
-        {
-            case "Head":
-                this.damage = headDamage;
-                break;
-            case "Body":
-                this.damage = bodyDamage;
-                break;
-            case "Arm":
-                this.damage = armDamage;
-                break;
-            case "Leg":
-                this.damage = legDamage;
-                break;
-            default:
-                this.damage = _defaultDamage;
-                break;
-        }
 
+    public void TakeDamage(float damage)
+    {
         damage = this.damage;
         health -= damage;
         healthBar.fillAmount = health / _defaultHealth;
@@ -109,8 +84,8 @@ public class Enemies : MonoBehaviour
             _isDead = true;
             _animator.Play("Enemy_Die");
             _navMeshAgent.isStopped = true;
+            GetComponent<CapsuleCollider>().enabled = false;
         }
-            
     }
 
     private void FreezeSkill()
@@ -118,10 +93,12 @@ public class Enemies : MonoBehaviour
         if (_manaSystem.isFreeze)
         {
             _navMeshAgent.isStopped = true;
+            _animator.SetBool("Idle", true);
         }
         else
         {
             _navMeshAgent.isStopped = false;
+            _animator.SetBool("Idle", false);
         }
     }
 
@@ -129,27 +106,47 @@ public class Enemies : MonoBehaviour
     {
         _navMeshAgent.speed = _manaSystem.isSlowSkill ? slowSkillSpeed : _defaultSpeed;
     }
+
     private void AIController()
     {
-        _navMeshAgent.SetDestination(_destination.position);
-        if (_navMeshAgent.remainingDistance<=stoppingDistance)
+        if (_manaSystem.isFreeze) return;
+        Collider[] colliders = Physics.OverlapSphere(transform.position, suspicionDamage);
+
+        if (_navMeshAgent.remainingDistance<=suspicionDamage)
         {
-            _animator.SetBool("isPunch",true);
-            _animator.SetBool("isRun",false);
-            _navMeshAgent.isStopped = true;
+            Debug.Log("Suspicion");
+            foreach (var hitCollider in colliders)
+            {
+                if (hitCollider.CompareTag("Player"))
+                {
+                    _animator.SetBool("isPunch", true);
+                    _animator.SetBool("isRun", false);
+                    _navMeshAgent.isStopped = true;
+                    _isSuspicion = true;
+                }
+            }
         }
         else
         {
-            _animator.SetBool("isPunch",false);
-            _animator.SetBool("isRun",true);
+            _animator.SetBool("isPunch", false);
+            _animator.SetBool("isRun", true);
             _navMeshAgent.isStopped = false;
-        }
+            _isSuspicion = false;
+        }   
+        
+        
+        
+        _navMeshAgent.SetDestination(_destination.position);
+
+       
     }
 
     public void HitDamage()
     {
+        if (!_isSuspicion) return;
         _playerHealth.TakenDamage(hitDamage);
-    } 
+    }
+
     public float DamageAmount => damage;
 
     public void Die()
@@ -157,5 +154,11 @@ public class Enemies : MonoBehaviour
         _manaSystem.SetMana();
         _playerHealth.OnDestroyVariables();
         Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, suspicionDamage);
     }
 }

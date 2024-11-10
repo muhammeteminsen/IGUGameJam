@@ -80,13 +80,13 @@ public class GunSystem : MonoBehaviour
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && Time.time > _hitCounter &&
                 _reloadSystem.bullet > 0 && !_reloadSystem.isReloading && !_playerMovement.isSpring)
             {
-                IDamageable damageable = hit.transform.GetComponentInParent<IDamageable>();
+                IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 Shooting();
                 if (damageable != null)
                 {
                     hit.transform.GetComponent<Animator>().SetTrigger("Hit");
                     float damage = damageable.DamageAmount;
-                    damageable.TakeDamage(damage, hit);
+                    damageable.TakeDamage(damage);
                     damagePopUpText.text = damage.ToString(CultureInfo.InvariantCulture);
                     Instantiate(damagePopUpText, hit.point + _damagePopUpOffset, Quaternion.LookRotation(-hit.normal));
                     ParticleSystem bloodEffectInstance =
