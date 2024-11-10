@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4963522403056884582}
   - component: {fileID: 7612857812289857962}
   - component: {fileID: 3528690135016238249}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Particle Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4829,7 +4829,7 @@ GameObject:
   - component: {fileID: 3091907706480271123}
   - component: {fileID: 9187186171839440005}
   - component: {fileID: 3320446855706279428}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Rain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9422,7 +9422,7 @@ GameObject:
   m_Component:
   - component: {fileID: 486041072304615687}
   - component: {fileID: 2938276173290503326}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Time AnomalyFast
   m_TagString: AnomalyFast
   m_Icon: {fileID: 0}
@@ -9479,6 +9479,30 @@ PrefabInstance:
     - target: {fileID: 1000010302070858, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
       propertyPath: m_Name
       value: RainEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010302070858, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011092933414, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011503386248, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011507014474, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011924099192, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000013364424978, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4000010603562546, guid: d0c0b49979d372942ae5a964d9364111, type: 3}
       propertyPath: m_LocalPosition.x
