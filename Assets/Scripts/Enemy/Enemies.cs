@@ -33,6 +33,7 @@ public class Enemies : MonoBehaviour
     private Animator _animator;
     private PlayerHealth _playerHealth;
     private bool _isSuspicion;
+    private SkinnedMeshRenderer _renderer;
 
     private void Awake()
     {
@@ -41,6 +42,7 @@ public class Enemies : MonoBehaviour
         _manaSystem = FindObjectOfType<ManaSystem>();
         _camera = Camera.main;
         _playerHealth = _destination.GetComponent<PlayerHealth>();
+        _renderer = GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
     private void Start()
@@ -94,11 +96,19 @@ public class Enemies : MonoBehaviour
         {
             _navMeshAgent.isStopped = true;
             _animator.SetBool("Idle", true);
+            foreach (var material in _renderer.materials)
+            {
+                material.SetFloat("_Freeze", 1.0f); // freeze boolunu aktif et
+            }
         }
         else
         {
             _navMeshAgent.isStopped = false;
             _animator.SetBool("Idle", false);
+            foreach (var material in _renderer.materials)
+            {
+                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dýþý býrak
+            }
         }
     }
 
