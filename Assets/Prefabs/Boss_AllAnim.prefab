@@ -85,14 +85,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:LeftArm'\n\tTransform 'mixamorig:RightHand'\n\tTransform
-    'mixamorig:LeftHandPinky3'\n\tTransform 'mixamorig:LeftForeArm'\n\tTransform
-    'mixamorig:RightForeArm'\n\tTransform 'mixamorig:RightToeBase'\n\tTransform 'mixamorig:RightHandMiddle3'\n\tTransform
-    'mixamorig:LeftHandIndex3'\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:RightFoot'\n\tand
-    more ...\n\tFrom animation clip 'Boss_Run'\n\tFrom animation clip 'Boss_Punch'\n\tFrom
-    animation clip 'Boss_Die'\n\tFrom animation clip 'Boss_Roar'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -161,9 +154,9 @@ MonoBehaviour:
   backgroundHealthBar: {fileID: 5314761019728085284}
   healthBarCanvas: {fileID: 6039837343860903125}
   healthBarSmooth: 3
-  stoppingDistance: 2
+  stoppingDistance: 4
   hitDamage: 10
-  suspicionDamage: 2.12
+  suspicionDamage: 4
 --- !u!1 &453383369290562432
 GameObject:
   m_ObjectHideFlags: 0
