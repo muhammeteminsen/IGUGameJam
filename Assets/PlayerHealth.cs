@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -58,6 +59,11 @@ public class PlayerHealth : MonoBehaviour
                 _vignette.intensity.value = _defaultVignetteIntensity;
                 _isDamaged = false;
             }
+        }
+
+        if (health<=0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }
