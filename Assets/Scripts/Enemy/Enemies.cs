@@ -62,6 +62,8 @@ public class Enemies : MonoBehaviour
             AIController();
             SlowDownSkill();
         }
+        
+        _navMeshAgent.SetDestination(_destination.position);
     }
 
 
@@ -107,7 +109,7 @@ public class Enemies : MonoBehaviour
             _animator.SetBool("Idle", false);
             foreach (var material in _renderer.materials)
             {
-                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dýþý býrak
+                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dï¿½ï¿½ï¿½ bï¿½rak
             }
         }
     }
@@ -119,6 +121,7 @@ public class Enemies : MonoBehaviour
 
     private void AIController()
     {
+        
         if (_manaSystem.isFreeze) return;
         Collider[] colliders = Physics.OverlapSphere(transform.position, suspicionDamage);
 
@@ -146,7 +149,7 @@ public class Enemies : MonoBehaviour
         
         
         
-        _navMeshAgent.SetDestination(_destination.position);
+        
 
        
     }
@@ -163,7 +166,7 @@ public class Enemies : MonoBehaviour
     {
         foreach (var material in _renderer.materials)
             {
-                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dýþý býrak
+                material.SetFloat("_Freeze", 0.0f); // freeze boolunu devre dï¿½ï¿½ï¿½ bï¿½rak
             }
         _manaSystem.SetMana();
         _playerHealth.OnDestroyVariables();

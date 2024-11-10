@@ -139,16 +139,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  damage: 15
+  damage: 35
   slowSkillSpeed: 1
   healthBar: {fileID: 5181934711423881314}
   backgroundHealthBar: {fileID: 3639968816746188281}
   healthBarCanvas: {fileID: 7978144185004073659}
   healthBarSmooth: 3
-  headDamage: 200
-  bodyDamage: 25
-  armDamage: 10
-  legDamage: 15
+  stoppingDistance: 0
+  hitDamage: 0
+  suspicionDamage: 0
 --- !u!195 &4541863328686129205
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -170,7 +169,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!1 &2227645194713437735
 GameObject:
   m_ObjectHideFlags: 0
