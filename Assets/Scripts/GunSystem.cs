@@ -124,7 +124,7 @@ public class GunSystem : MonoBehaviour
         _reloadSystem.bullet--;
         _hitCounter = Time.time + hitTime;
         Debug.Log("Shooting");
-        // gunsounds.PlaySound("Fire");
+        gunsounds.PlaySound("Fire");
         Recoil();
     }
 

@@ -4713,12 +4713,24 @@ PrefabInstance:
       value: portal
       objectReference: {fileID: 0}
     - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.4978036
+      objectReference: {fileID: 0}
+    - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.83235
+      objectReference: {fileID: 0}
+    - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.83235
+      objectReference: {fileID: 0}
+    - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.53
       objectReference: {fileID: 0}
     - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.63
+      value: 2.551
       objectReference: {fileID: 0}
     - target: {fileID: 6869651181521815890, guid: ed9c97b95809afa4e9be3f152ac08891, type: 3}
       propertyPath: m_LocalPosition.z

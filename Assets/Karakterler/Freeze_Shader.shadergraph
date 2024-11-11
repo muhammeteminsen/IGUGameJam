@@ -2518,7 +2518,7 @@
     "m_ObjectId": "a06ea94d96434a3da75a64087d3c800e",
     "m_Title": "BaseColor2",
     "m_Position": {
-        "x": -1649.5999755859375,
+        "x": -1649.599853515625,
         "y": 1478.39990234375
     }
 }
@@ -2790,8 +2790,8 @@
     "m_AlphaMode": 0,
     "m_RenderFace": 2,
     "m_AlphaClip": false,
-    "m_CastShadows": true,
-    "m_ReceiveShadows": true,
+    "m_CastShadows": false,
+    "m_ReceiveShadows": false,
     "m_DisableTint": false,
     "m_AdditionalMotionVectorMode": 0,
     "m_AlembicMotionVectors": false,
@@ -3288,8 +3288,8 @@
     "m_ObjectId": "d3afb9e6dc4e4f3a8613a91e3d0fe789",
     "m_Title": "BaseColor1",
     "m_Position": {
-        "x": -1487.2001953125,
-        "y": 205.59999084472657
+        "x": -1487.199951171875,
+        "y": 205.60003662109376
     }
 }
 

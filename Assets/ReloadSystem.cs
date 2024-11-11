@@ -28,7 +28,7 @@ public class ReloadSystem : MonoBehaviour
         {
             isReloading = true;
             _animator.SetTrigger("Reload");
-            // _sounds.PlaySound("Reload");
+         _sounds.PlaySound("Reload");
         }
         bulletText.text = bullet.ToString(CultureInfo.InvariantCulture);
         magazineText.text = magazine.ToString(CultureInfo.InvariantCulture);

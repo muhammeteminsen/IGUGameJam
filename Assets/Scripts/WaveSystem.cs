@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [Serializable]
@@ -15,6 +16,7 @@ public class WaveSystem : MonoBehaviour
     [SerializeField] private List<Wave> waves;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private int maxWave;
+    [SerializeField] private TextMeshProUGUI waveText;
     private bool _waveCanStart;
     private int _currentWave;
     private Enemies[] _enemies;
@@ -22,8 +24,11 @@ public class WaveSystem : MonoBehaviour
 
     private void Start()
     {
-        _currentWave = 0;
+        
+        _currentWave = 1;
         _waveCanStart = true;
+         waveText.text = "Wave: " + _currentWave;
+       
     }
 
     private void Update()
@@ -56,5 +61,6 @@ public class WaveSystem : MonoBehaviour
             yield return new WaitForSeconds(wave.spawnInterval);
         }
         _currentWave++;
+         waveText.text = "Wave: " + _currentWave;
     }
 }
